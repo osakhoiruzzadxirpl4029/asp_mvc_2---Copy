@@ -3,7 +3,6 @@ using asp_mvc_2.Security;
 using System.Web.Security;
 using asp_mvc_2.Models.ViewModel;
 using asp_mvc_2.Models.EntityManager;
-using static asp_mvc_2.Models.ViewModel.UserModel;
 
 namespace asp_mvc_2.Controllers
 {
@@ -40,6 +39,29 @@ namespace asp_mvc_2.Controllers
             }
 
             return View();
+        }
+        [Authorize]
+        public ActionResult EditProfile()
+        {
+            string loginName = User.Identity.Name;
+            UserManager UM = new UserManager();
+            UserProfileView UPV = UM.GetUserProfile(UM.GetUserID(loginName));
+            return View(UPV);
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult EditProfile(UserProfileView profile)
+        {
+            if (ModelState.IsValid)
+            {
+                UserManager UM = new UserManager();
+                UM.UpdateUserAccount(profile);
+
+                ViewBag.Status = "Update Sucessful!";
+            }
+            return View(profile);
         }
 
 
